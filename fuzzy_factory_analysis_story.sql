@@ -73,11 +73,11 @@
 */
 
 SELECT
-    YEAR(ws.created_at)                   AS year,
-    QUARTER(ws.created_at)                AS quarter,
-    MAX(DATE(ws.created_at))              AS final_date_that_quarter,
+    YEAR(ws.created_at) AS year,
+    QUARTER(ws.created_at) AS quarter,
+    MAX(DATE(ws.created_at)) AS final_date_that_quarter,
     COUNT(DISTINCT ws.website_session_id) AS sessions,
-    COUNT(DISTINCT o.order_id)            AS orders
+    COUNT(DISTINCT o.order_id) AS orders
 FROM website_sessions ws
     LEFT JOIN orders o
         ON ws.website_session_id = o.website_session_id
@@ -111,23 +111,23 @@ GROUP BY 1, 2;
 */
 
 SELECT
-    YEAR(ws.created_at)                   AS year,
-    QUARTER(ws.created_at)                AS quarter,
-    MAX(DATE(ws.created_at))              AS final_date_that_quarter,
+    YEAR(ws.created_at) AS year,
+    QUARTER(ws.created_at) AS quarter,
+    MAX(DATE(ws.created_at)) AS final_date_that_quarter,
     COUNT(DISTINCT ws.website_session_id) AS sessions,
-    COUNT(DISTINCT o.order_id)            AS orders,
+    COUNT(DISTINCT o.order_id) AS orders,
     ROUND(
         COUNT(DISTINCT o.order_id)
         / COUNT(DISTINCT ws.website_session_id)
-    * 100, 2)                             AS session_order_cvr,
+    * 100, 2) AS session_order_cvr,
     ROUND(
         SUM(o.price_usd)
         / COUNT(DISTINCT o.order_id)
-    , 2)                                  AS rev_per_order,
+    , 2) AS rev_per_order,
     ROUND(
         SUM(o.price_usd)
         / COUNT(DISTINCT ws.website_session_id)
-    , 2)                                  AS rev_per_session
+    , 2) AS rev_per_session
 FROM website_sessions ws
     LEFT JOIN orders o
         ON ws.website_session_id = o.website_session_id
@@ -160,29 +160,29 @@ GROUP BY 1, 2;
 */
 
 SELECT
-    YEAR(ws.created_at)                   AS year,
-    QUARTER(ws.created_at)                AS quarter,
-    MAX(DATE(ws.created_at))              AS final_date_that_quarter,
+    YEAR(ws.created_at) AS year,
+    QUARTER(ws.created_at) AS quarter,
+    MAX(DATE(ws.created_at)) AS final_date_that_quarter,
     COUNT(DISTINCT CASE
         WHEN http_referer IS NULL
-        THEN o.order_id END)              AS direct_type_in_orders,
+        THEN o.order_id END) AS direct_type_in_orders,
     COUNT(DISTINCT CASE
         WHEN utm_source IS NULL
         AND http_referer IN (
             'https://www.gsearch.com',
             'https://www.bsearch.com')
-        THEN o.order_id END)              AS organic_search_orders,
+        THEN o.order_id END) AS organic_search_orders,
     COUNT(DISTINCT CASE
         WHEN utm_source = 'gsearch'
         AND utm_campaign = 'nonbrand'
-        THEN o.order_id END)              AS gsearch_nonbrand_orders,
+        THEN o.order_id END) AS gsearch_nonbrand_orders,
     COUNT(DISTINCT CASE
         WHEN utm_source = 'bsearch'
         AND utm_campaign = 'nonbrand'
-        THEN o.order_id END)              AS bsearch_nonbrand_orders,
+        THEN o.order_id END) AS bsearch_nonbrand_orders,
     COUNT(DISTINCT CASE
         WHEN utm_campaign = 'brand'
-        THEN o.order_id END)              AS brand_search_orders
+        THEN o.order_id END) AS brand_search_orders
 FROM website_sessions ws
     LEFT JOIN orders o
         ON ws.website_session_id = o.website_session_id
@@ -214,15 +214,15 @@ GROUP BY 1, 2;
 */
 
 SELECT
-    YEAR(ws.created_at)                   AS year,
-    QUARTER(ws.created_at)                AS quarter,
-    MAX(DATE(ws.created_at))              AS final_date_that_quarter,
+    YEAR(ws.created_at) AS year,
+    QUARTER(ws.created_at) AS quarter,
+    MAX(DATE(ws.created_at)) AS final_date_that_quarter,
     ROUND(
         COUNT(DISTINCT CASE WHEN http_referer IS NULL
             THEN o.order_id END)
         / NULLIF(COUNT(DISTINCT CASE WHEN http_referer IS NULL
             THEN ws.website_session_id END), 0)
-    * 100, 2)                             AS direct_type_in_cvr,
+    * 100, 2) AS direct_type_in_cvr,
     ROUND(
         COUNT(DISTINCT CASE
             WHEN utm_source IS NULL
@@ -236,7 +236,7 @@ SELECT
                 'https://www.gsearch.com',
                 'https://www.bsearch.com')
             THEN ws.website_session_id END), 0)
-    * 100, 2)                             AS organic_search_cvr,
+    * 100, 2) AS organic_search_cvr,
     ROUND(
         COUNT(DISTINCT CASE
             WHEN utm_source = 'gsearch'
@@ -246,7 +246,7 @@ SELECT
             WHEN utm_source = 'gsearch'
             AND utm_campaign = 'nonbrand'
             THEN ws.website_session_id END), 0)
-    * 100, 2)                             AS gsearch_nonbrand_cvr,
+    * 100, 2)  AS gsearch_nonbrand_cvr,
     ROUND(
         COUNT(DISTINCT CASE
             WHEN utm_source = 'bsearch'
@@ -256,7 +256,7 @@ SELECT
             WHEN utm_source = 'bsearch'
             AND utm_campaign = 'nonbrand'
             THEN ws.website_session_id END), 0)
-    * 100, 2)                             AS bsearch_nonbrand_cvr,
+    * 100, 2) AS bsearch_nonbrand_cvr,
     ROUND(
         COUNT(DISTINCT CASE
             WHEN utm_campaign = 'brand'
@@ -264,7 +264,7 @@ SELECT
         / NULLIF(COUNT(DISTINCT CASE
             WHEN utm_campaign = 'brand'
             THEN ws.website_session_id END), 0)
-    * 100, 2)                             AS brand_search_cvr
+    * 100, 2) AS brand_search_cvr
 FROM website_sessions ws
     LEFT JOIN orders o
         ON ws.website_session_id = o.website_session_id
@@ -302,34 +302,34 @@ GROUP BY 1, 2;
 */
 
 SELECT
-    YEAR(created_at)                      AS year,
-    MONTH(created_at)                     AS month,
+    YEAR(created_at) AS year,
+    MONTH(created_at) AS month,
     SUM(CASE WHEN product_id = 1
-        THEN price_usd END)               AS fuzzy_bear_rev,
+        THEN price_usd END) AS fuzzy_bear_rev,
     SUM(CASE WHEN product_id = 1
         THEN price_usd END)
     - SUM(CASE WHEN product_id = 1
-        THEN cogs_usd END)                AS fuzzy_bear_margin,
+        THEN cogs_usd END) AS fuzzy_bear_margin,
     SUM(CASE WHEN product_id = 2
-        THEN price_usd END)               AS love_bear_rev,
+        THEN price_usd END) AS love_bear_rev,
     SUM(CASE WHEN product_id = 2
         THEN price_usd END)
     - SUM(CASE WHEN product_id = 2
-        THEN cogs_usd END)                AS love_bear_margin,
+        THEN cogs_usd END) AS love_bear_margin,
     SUM(CASE WHEN product_id = 3
-        THEN price_usd END)               AS sugar_panda_rev,
+        THEN price_usd END) AS sugar_panda_rev,
     SUM(CASE WHEN product_id = 3
         THEN price_usd END)
     - SUM(CASE WHEN product_id = 3
-        THEN cogs_usd END)                AS sugar_panda_margin,
+        THEN cogs_usd END) AS sugar_panda_margin,
     SUM(CASE WHEN product_id = 4
-        THEN price_usd END)               AS hudson_river_bear_rev,
+        THEN price_usd END) AS hudson_river_bear_rev,
     SUM(CASE WHEN product_id = 4
         THEN price_usd END)
     - SUM(CASE WHEN product_id = 4
-        THEN cogs_usd END)                AS hudson_river_bear_margin,
-    SUM(price_usd)                        AS total_revenue,
-    SUM(price_usd) - SUM(cogs_usd)        AS total_profit_margin
+        THEN cogs_usd END) AS hudson_river_bear_margin,
+    SUM(price_usd) AS total_revenue,
+    SUM(price_usd) - SUM(cogs_usd) AS total_profit_margin
 FROM order_items
 GROUP BY 1, 2;
 
@@ -369,7 +369,7 @@ GROUP BY 1, 2;
 WITH product_page AS (
     SELECT
         website_session_id,
-        MIN(website_pageview_id)  AS product_page_id,
+        MIN(website_pageview_id) AS product_page_id,
         created_at
     FROM website_pageviews
     WHERE pageview_url = '/products'
@@ -379,9 +379,9 @@ following_page AS (
     SELECT
         pp.website_session_id,
         pp.product_page_id,
-        pp.created_at                  AS product_page_created_at,
-        MIN(wpv.website_pageview_id)   AS following_page_id,
-        wpv.created_at                 AS following_page_created_at
+        pp.created_at AS product_page_created_at,
+        MIN(wpv.website_pageview_id) AS following_page_id,
+        wpv.created_at AS following_page_created_at
     FROM product_page pp
         LEFT JOIN website_pageviews wpv
             ON pp.website_session_id = wpv.website_session_id
@@ -389,17 +389,17 @@ following_page AS (
     GROUP BY 1
 )
 SELECT
-    YEAR(fp.product_page_created_at)       AS year,
-    MONTH(fp.product_page_created_at)      AS month,
-    COUNT(DISTINCT fp.product_page_id)     AS product_page_sessions,
+    YEAR(fp.product_page_created_at) AS year,
+    MONTH(fp.product_page_created_at) AS month,
+    COUNT(DISTINCT fp.product_page_id) AS product_page_sessions,
     ROUND(
         COUNT(DISTINCT fp.following_page_id)
         / COUNT(DISTINCT fp.product_page_id)
-    * 100, 2)                              AS product_page_ctr,
+    * 100, 2) AS product_page_ctr,
     ROUND(
         COUNT(DISTINCT o.order_id)
         / COUNT(DISTINCT fp.product_page_id)
-    * 100, 2)                              AS product_to_order_conv_rt
+    * 100, 2) AS product_to_order_conv_rt
 FROM following_page fp
     LEFT JOIN orders o
         ON fp.website_session_id = o.website_session_id
@@ -454,7 +454,7 @@ cross_sell_products AS (
         pp.order_id,
         pp.primary_product_id,
         pp.created_at,
-        oi.product_id             AS cross_sell_product
+        oi.product_id AS cross_sell_product
     FROM primary_product pp
         LEFT JOIN order_items oi
             ON pp.order_id = oi.order_id
@@ -462,27 +462,27 @@ cross_sell_products AS (
 )
 SELECT
     csp.primary_product_id,
-    COUNT(DISTINCT csp.order_id)                               AS total_orders,
+    COUNT(DISTINCT csp.order_id) AS total_orders,
     COUNT(DISTINCT CASE WHEN csp.cross_sell_product = 1
-        THEN csp.order_id END)                                 AS cross_sell_p1,
+        THEN csp.order_id END) AS cross_sell_p1,
     ROUND(COUNT(DISTINCT CASE WHEN csp.cross_sell_product = 1
         THEN csp.order_id END)
-        / COUNT(DISTINCT csp.order_id) * 100, 2)              AS cross_sell_p1_rate,
+        / COUNT(DISTINCT csp.order_id) * 100, 2) AS cross_sell_p1_rate,
     COUNT(DISTINCT CASE WHEN csp.cross_sell_product = 2
-        THEN csp.order_id END)                                 AS cross_sell_p2,
+        THEN csp.order_id END) AS cross_sell_p2,
     ROUND(COUNT(DISTINCT CASE WHEN csp.cross_sell_product = 2
         THEN csp.order_id END)
-        / COUNT(DISTINCT csp.order_id) * 100, 2)              AS cross_sell_p2_rate,
+        / COUNT(DISTINCT csp.order_id) * 100, 2) AS cross_sell_p2_rate,
     COUNT(DISTINCT CASE WHEN csp.cross_sell_product = 3
-        THEN csp.order_id END)                                 AS cross_sell_p3,
+        THEN csp.order_id END) AS cross_sell_p3,
     ROUND(COUNT(DISTINCT CASE WHEN csp.cross_sell_product = 3
         THEN csp.order_id END)
-        / COUNT(DISTINCT csp.order_id) * 100, 2)              AS cross_sell_p3_rate,
+        / COUNT(DISTINCT csp.order_id) * 100, 2) AS cross_sell_p3_rate,
     COUNT(DISTINCT CASE WHEN csp.cross_sell_product = 4
-        THEN csp.order_id END)                                 AS cross_sell_p4,
+        THEN csp.order_id END) AS cross_sell_p4,
     ROUND(COUNT(DISTINCT CASE WHEN csp.cross_sell_product = 4
         THEN csp.order_id END)
-        / COUNT(DISTINCT csp.order_id) * 100, 2)              AS cross_sell_p4_rate
+        / COUNT(DISTINCT csp.order_id) * 100, 2) AS cross_sell_p4_rate
 FROM cross_sell_products csp
 GROUP BY 1;
 
